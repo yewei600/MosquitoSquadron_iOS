@@ -11,6 +11,7 @@ import UIKit
 
 class AboutSquadronViewCell: UICollectionViewCell {
     
+    @IBOutlet weak var aboutSquadronImage: UIImageView!
     @IBOutlet weak var aboutSqudaronLabel: UILabel!
     
     func setCellText(_ text: String?) {

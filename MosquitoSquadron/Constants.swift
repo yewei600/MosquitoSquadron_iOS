@@ -16,5 +16,9 @@ extension WebAppClient {
         static let ApiHost = "frozen-savannah-70920.herokuapp.com"
         static let ApiPath = "/contacts"
     }
+    
+    struct SquadronActivity {
+        
+    }
 }
 
