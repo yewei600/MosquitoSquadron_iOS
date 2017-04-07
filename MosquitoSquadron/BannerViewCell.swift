@@ -14,7 +14,7 @@ class BannerViewCell: UITableViewCell {
     @IBOutlet weak var masterView: UIView!
     @IBOutlet weak var masterViewLabel: UILabel!
     @IBOutlet weak var slaveView: UIView!
-    @IBOutlet weak var slaveViewLabel: UILabel!
+    @IBOutlet weak var slaveTextView: UITextView!
     
     @IBOutlet weak var slaveHeightConstraint: NSLayoutConstraint!
     

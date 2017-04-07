@@ -12,6 +12,7 @@ import UIKit
 class BannerTableViewController: UITableViewController {
     
     var bannerItems = [BannerModel]()
+    var slaveHeights = [CGFloat]()
     
     var selectedIndex = -1
     
@@ -45,7 +46,9 @@ class BannerTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! BannerViewCell
         
         cell.masterViewLabel.text = bannerItems[indexPath.row].firstName
-        cell.slaveViewLabel.text = bannerItems[indexPath.row].lastName
+        cell.slaveTextView.text = bannerItems[indexPath.row].lastName
+        
+        slaveHeights.append(cell.slaveTextView.contentSize.height)
         return cell
     }
     
@@ -55,14 +58,17 @@ class BannerTableViewController: UITableViewController {
         } else {
             selectedIndex = indexPath.row
         }
+        
         self.tableView.beginUpdates()
         self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
         self.tableView.endUpdates()
     }
     
+    
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
         if selectedIndex == indexPath.row {
-            return 400
+            return (tableView.cellForRow(at: indexPath)?.frame.height)!
         } else {
             return 40
         }
