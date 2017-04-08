@@ -17,9 +17,10 @@ class WebAppClient: NSObject {
     var session = URLSession.shared
     
     //MARK: Get
-    func getBannerItems(completionHandler: @escaping (_ results: Any?,_ error: NSError?) -> Void) -> URLSessionTask{
+    func getBannerItems(completionHandler: @escaping (_ results: Any?, _ date: String, _ error: NSError?) -> Void) -> URLSessionTask{
         var parsedResult: Any! = nil
         var bannerItems = [BannerModel]()
+        var dateString: String?
         
         let request = URLRequest(url: constructURL())
         
@@ -45,7 +46,11 @@ class WebAppClient: NSObject {
                 
                 if let results = parsedResult as? [[String:String]] {
                     for result in results {
-                        bannerItems.append(BannerModel(dictionary: result))
+                        if result["firstName"]=="date"{
+                            dateString = result["lastName"]
+                        } else {
+                            bannerItems.append(BannerModel(dictionary: result))
+                        }
                     }
                     print("EARLIER get() bannerItem.length==\(bannerItems.count)")
                 }
@@ -54,7 +59,12 @@ class WebAppClient: NSObject {
                 //let userInfo = [NSLocalizedDescriptionKey : "Could not parse the data as JSON: '\(data)'"]
                 // completionHandlerForConvertData(nil, NSError(domain: "convertDataWithCompletionHandler", code: 1, userInfo: userInfo))
             }
-            completionHandler(bannerItems, nil)
+            
+            //in case date string is null
+            if dateString == nil {
+                dateString = "Banner"
+            }
+            completionHandler(bannerItems,dateString!,nil)
         }
         task.resume()
         

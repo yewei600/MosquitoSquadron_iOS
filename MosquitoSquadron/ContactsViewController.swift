@@ -12,14 +12,6 @@ import UIKit
 
 class ContactsViewController: UIViewController {
     
-    
-    @IBOutlet weak var squadronCellView: UIView!
-    
-    override func viewDidLoad() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(squadronCellTapped(_:)))
-        squadronCellView.addGestureRecognizer(tap)
-    }
-    
     func squadronCellTapped(_ sender: UIGestureRecognizer) {
         
         print("Hello I'm tapped!")

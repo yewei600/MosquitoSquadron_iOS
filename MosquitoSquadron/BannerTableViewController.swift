@@ -9,23 +9,33 @@
 import Foundation
 import UIKit
 
+//http://stackoverflow.com/questions/29912852/how-to-show-activity-indicator-while-tableview-loads
 class BannerTableViewController: UITableViewController {
     
-    var bannerItems = [BannerModel]()
-    var slaveHeights = [CGFloat]()
+    var loadingIndicator: UIActivityIndicatorView!
     
-    var selectedIndex = -1
+    var bannerItems = [BannerModel]()
+    var dateString = "Banner"
     
     override func viewWillAppear(_ animated: Bool) {
+        print("viewWillAppear() ")
+        
         if bannerItems.count == 0 {
-            let _ = WebAppClient.sharedInstance().getBannerItems(completionHandler: { (results, error) in
+            loadingIndicator.startAnimating()
+            loadingIndicator.backgroundColor = UIColor.white
+            
+            let _ = WebAppClient.sharedInstance().getBannerItems(completionHandler: { (results, date, error) in
                 if let error = error {
                     print(error)
                 } else {
                     self.bannerItems = results as! [BannerModel]
+                    self.dateString = date+" Banner"
                     print("bannerItems length == \(self.bannerItems.count) in table VC")
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
+                        self.navigationItem.title = "TESTING"
+                        self.loadingIndicator.stopAnimating()
+                        self.loadingIndicator.hidesWhenStopped = true
                     }
                 }
             })
@@ -33,44 +43,38 @@ class BannerTableViewController: UITableViewController {
     }
     
     override func viewDidLoad() {
+        print("viewDidLoad()  ")
         super.viewDidLoad()
-        
+        activityIndicator()
+    }
+    
+    func activityIndicator() {
+        loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        loadingIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+        loadingIndicator.center = self.view.center
+        self.view.addSubview(loadingIndicator)
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // print("numberOfRowsInSection,  length==\(bannerItems.count)")
+        
+        
         return bannerItems.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! BannerViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ItemCell")!
         
-        cell.masterViewLabel.text = bannerItems[indexPath.row].firstName
-        cell.slaveTextView.text = bannerItems[indexPath.row].lastName
-        
-        slaveHeights.append(cell.slaveTextView.contentSize.height)
+        cell.textLabel?.text = bannerItems[indexPath.row].firstName
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if(selectedIndex==indexPath.row) {
-            selectedIndex = -1
-        } else {
-            selectedIndex = indexPath.row
-        }
-        
-        self.tableView.beginUpdates()
-        self.tableView.reloadRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
-        self.tableView.endUpdates()
+        let alert = UIAlertController(title: "", message: bannerItems[indexPath.row].lastName, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: .default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        if selectedIndex == indexPath.row {
-            return (tableView.cellForRow(at: indexPath)?.frame.height)!
-        } else {
-            return 40
-        }
-    }
+    
 }
